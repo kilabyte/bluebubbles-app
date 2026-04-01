@@ -171,7 +171,7 @@ class MessageHelper {
       Message? associatedMessage = Message.findOne(guid: message.associatedMessageGuid);
       if (associatedMessage != null) {
         // grab the verb we'll use from the reactionToVerb map
-        String? verb = ReactionTypes.getReactionVerb(message.associatedMessageType!);
+        String? verb = ReactionTypes.getReactionVerb(message.associatedMessageType);
         // we need to check balloonBundleId first because for some reason
         // game pigeon messages have the text "�"
         if (associatedMessage.isInteractive) {
