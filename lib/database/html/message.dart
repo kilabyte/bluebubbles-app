@@ -370,7 +370,7 @@ class Message {
   List<Attachment> get previewAttachments => attachments.where((e) => e != null && e.mimeType == null).cast<Attachment>().toList();
 
   List<Message> get reactions => associatedMessages.where((item) =>
-      ReactionTypes.toList().contains(item.associatedMessageType?.replaceAll("-", ""))).toList();
+      ReactionTypes.isValidReaction(item.associatedMessageType)).toList();
 
   Indicator get indicatorToShow {
     if (!isFromMe!) return Indicator.NONE;

@@ -130,7 +130,7 @@ class _MessagePopupState extends OptimizedState<MessagePopup> with SingleTickerP
     updateObx(() {
       currentlySelectedReaction = null;
       reactions = getUniqueReactionMessages(message.associatedMessages
-          .where((e) => ReactionTypes.toList().contains(e.associatedMessageType?.replaceAll("-", "")) && (e.associatedMessagePart ?? 0) == part.part)
+          .where((e) => ReactionTypes.isValidReaction(e.associatedMessageType) && (e.associatedMessagePart ?? 0) == part.part)
           .toList());
       final self = reactions.firstWhereOrNull((e) => e.isFromMe!)?.associatedMessageType;
       if (!(self?.contains("-") ?? true)) {
@@ -1147,7 +1147,7 @@ class ReactionDetails extends StatelessWidget {
                             ? const EdgeInsets.only(top: 8.0, left: 7.0, right: 7.0, bottom: 7.0)
                                 .add(EdgeInsets.only(right: message.associatedMessageType == "emphasize" ? 1 : 0))
                             : EdgeInsets.zero,
-                        child: ss.settings.skin.value == Skins.iOS
+                        child: ss.settings.skin.value == Skins.iOS && !ReactionTypes.isEmojiReaction(message.associatedMessageType)
                             ? SvgPicture.asset(
                                 'assets/reactions/${message.associatedMessageType}-black.svg',
                                 colorFilter: ColorFilter.mode(
@@ -1161,7 +1161,7 @@ class ReactionDetails extends StatelessWidget {
                             : Center(
                                 child: Builder(builder: (context) {
                                   final text = Text(
-                                    ReactionTypes.reactionToEmoji[message.associatedMessageType] ?? "X",
+                                    ReactionTypes.getReactionEmoji(message.associatedMessageType!),
                                     style: const TextStyle(fontSize: 18, fontFamily: 'Apple Color Emoji'),
                                     textAlign: TextAlign.center,
                                   );

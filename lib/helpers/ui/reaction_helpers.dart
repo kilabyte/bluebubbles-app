@@ -59,6 +59,34 @@ class ReactionTypes {
     Emojis.redExclamationMark: EMPHASIZE,
     Emojis.redQuestionMark: QUESTION,
   };
+
+  /// Returns true if [type] is a classic tapback or an emoji reaction.
+  static bool isValidReaction(String? type) {
+    if (type == null || type.isEmpty) return false;
+    final cleaned = type.replaceAll("-", "");
+    return toList().contains(cleaned) || isEmojiReaction(cleaned);
+  }
+
+  /// Returns true if [type] is an emoji reaction (not a classic tapback or sticker).
+  static bool isEmojiReaction(String? type) {
+    if (type == null || type.isEmpty) return false;
+    final cleaned = type.replaceAll("-", "");
+    return !toList().contains(cleaned) && cleaned != "sticker";
+  }
+
+  /// Returns the emoji to display for a reaction type.
+  /// Classic tapbacks map to their emoji; emoji reactions ARE the emoji.
+  static String getReactionEmoji(String type) {
+    return reactionToEmoji[type] ?? type;
+  }
+
+  /// Returns a verb phrase for notification text.
+  /// Classic tapbacks use the verb map; emoji reactions use "reacted [emoji] to".
+  static String getReactionVerb(String type) {
+    if (reactionToVerb.containsKey(type)) return reactionToVerb[type]!;
+    if (type.startsWith("-")) return "removed a ${ type.substring(1)} reaction from";
+    return "reacted $type to";
+  }
 }
 
 List<Message> getUniqueReactionMessages(List<Message> messages) {

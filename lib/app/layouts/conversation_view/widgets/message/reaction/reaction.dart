@@ -156,7 +156,7 @@ class ReactionWidgetState extends OptimizedState<ReactionWidget> {
             child: Builder(
                 builder: (context) {
                   final text = Text(
-                    ReactionTypes.reactionToEmoji[reactionType] ?? "X",
+                    ReactionTypes.getReactionEmoji(reactionType),
                     style: const TextStyle(fontSize: 15, fontFamily: 'Apple Color Emoji'),
                     textAlign: TextAlign.center,
                   );
@@ -208,12 +208,18 @@ class ReactionWidgetState extends OptimizedState<ReactionWidget> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(6.5).add(EdgeInsets.only(right: reactionType == "emphasize" ? 1 : 0)),
-                  child: SvgPicture.asset(
-                    'assets/reactions/$reactionType-black.svg',
-                    colorFilter: ColorFilter.mode(reactionType == "love"
-                        ? Colors.pink
-                        : (reactionIsFromMe ? context.theme.colorScheme.onPrimary : context.theme.colorScheme.properOnSurface), BlendMode.srcIn),
-                  ),
+                  child: ReactionTypes.isEmojiReaction(reactionType)
+                      ? Text(
+                          reactionType,
+                          style: const TextStyle(fontSize: 15, fontFamily: 'Apple Color Emoji'),
+                          textAlign: TextAlign.center,
+                        )
+                      : SvgPicture.asset(
+                          'assets/reactions/$reactionType-black.svg',
+                          colorFilter: ColorFilter.mode(reactionType == "love"
+                              ? Colors.pink
+                              : (reactionIsFromMe ? context.theme.colorScheme.onPrimary : context.theme.colorScheme.properOnSurface), BlendMode.srcIn),
+                        ),
                 )
               ),
             )
